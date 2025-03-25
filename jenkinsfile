@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    environment {
+        MAVEN_HOME = tool 'Maven'  // Ensure Maven is configured in Jenkins
+        JAVA_HOME = tool 'JDK11'   // Ensure JDK is configured in Jenkins
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git url: 'https://github.com/your-repo/java-maven-webapp.git', branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh "${MAVEN_HOME}/bin/mvn clean package"
+                }
+            }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                script {
+                    sh "${MAVEN_HOME}/bin/mvn test"
+                }
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo 'Build and Deployment Successful!'
+        }
+        failure {
+            echo 'Build Failed!'
+        }
+    }
+}
