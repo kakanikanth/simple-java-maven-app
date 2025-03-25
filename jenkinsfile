@@ -27,13 +27,6 @@ pipeline {
                     sh "${MAVEN_HOME}/bin/mvn test"
                 }
             }
-        }
-
-        stage('Archive Artifact') {
-            steps {
-                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
-            }
-        }
-
+        } 
     }
 }
